@@ -13,7 +13,7 @@ soundfile>=0.12.1
 pydub>=0.25.1
 
 # Database
-sqlite3  # Built-in with Python
+  # Built-in with Python
 sqlalchemy>=2.0.0
 
 # Web scraping and API
