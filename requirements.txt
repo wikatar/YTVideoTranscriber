@@ -1,0 +1,38 @@
+# Core transcription dependencies
+openai-whisper>=20231117
+whisperx>=3.1.1
+torch>=2.0.0
+torchaudio>=2.0.0
+
+# YouTube downloading
+yt-dlp>=2023.12.30
+
+# Audio processing
+librosa>=0.10.1
+soundfile>=0.12.1
+pydub>=0.25.1
+
+# Database
+sqlite3  # Built-in with Python
+sqlalchemy>=2.0.0
+
+# Web scraping and API
+requests>=2.31.0
+feedparser>=6.0.10
+beautifulsoup4>=4.12.0
+
+# Utilities
+python-dotenv>=1.0.0
+schedule>=1.2.0
+click>=8.1.0
+tqdm>=4.66.0
+colorama>=0.4.6
+
+# Optional: For advanced features
+transformers>=4.35.0
+accelerate>=0.24.0
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
