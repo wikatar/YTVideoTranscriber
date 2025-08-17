@@ -62,6 +62,31 @@ async def add_channel(channel_data: dict):
     """Add channel (mock response)."""
     return {"message": "Channel would be added in full system", "url": channel_data.get("url", "")}
 
+@app.post("/videos/process")
+async def process_video(video_data: dict):
+    """Process video (mock response)."""
+    return {"message": "Video would be processed in full system", "url": video_data.get("url", "")}
+
+@app.post("/monitoring/start")
+async def start_monitoring():
+    """Start monitoring (mock response)."""
+    return {"message": "Monitoring would start in full system"}
+
+@app.post("/monitoring/stop")
+async def stop_monitoring():
+    """Stop monitoring (mock response)."""
+    return {"message": "Monitoring would stop in full system"}
+
+@app.post("/monitoring/cycle")
+async def run_cycle():
+    """Run cycle (mock response)."""
+    return {"message": "Monitoring cycle would run in full system"}
+
+@app.post("/search")
+async def search_videos(search_data: dict):
+    """Search videos (mock response)."""
+    return []
+
 @app.get("/analytics/trending")
 async def get_trending_topics():
     """Get trending topics (empty for now)."""
@@ -76,6 +101,11 @@ async def get_storage_status():
         "immediate_cleanup_enabled": True,
         "max_temp_storage_gb": 2
     }
+
+@app.post("/storage/cleanup")
+async def cleanup_storage(cleanup_data: dict = None):
+    """Cleanup storage (mock response)."""
+    return {"message": "Storage cleanup would run in full system"}
 
 if __name__ == "__main__":
     print("🚀 Starting Simple Video Transcription System API Server")
