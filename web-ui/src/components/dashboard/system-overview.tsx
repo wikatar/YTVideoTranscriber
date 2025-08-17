@@ -34,8 +34,8 @@ export function SystemOverview({ status }: SystemOverviewProps) {
 
   const startMonitoring = useMutation({
     mutationFn: apiClient.startMonitoring,
-    onSuccess: () => {
-      toast.success("Monitoring started successfully");
+    onSuccess: (data) => {
+      toast.success(data.message || "Monitoring started successfully");
       queryClient.invalidateQueries({ queryKey: ['system-status'] });
     },
     onError: (error: any) => {
@@ -45,8 +45,8 @@ export function SystemOverview({ status }: SystemOverviewProps) {
 
   const stopMonitoring = useMutation({
     mutationFn: apiClient.stopMonitoring,
-    onSuccess: () => {
-      toast.success("Monitoring stopped successfully");
+    onSuccess: (data) => {
+      toast.success(data.message || "Monitoring stopped successfully");
       queryClient.invalidateQueries({ queryKey: ['system-status'] });
     },
     onError: (error: any) => {
@@ -56,8 +56,8 @@ export function SystemOverview({ status }: SystemOverviewProps) {
 
   const runCycle = useMutation({
     mutationFn: apiClient.runCycle,
-    onSuccess: () => {
-      toast.success("Processing cycle started");
+    onSuccess: (data) => {
+      toast.success(data.message || "Processing cycle started");
       queryClient.invalidateQueries({ queryKey: ['system-status'] });
     },
     onError: (error: any) => {
