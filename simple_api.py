@@ -54,9 +54,12 @@ async def get_channels():
     return channels_store
 
 @app.get("/videos")
-async def get_videos():
-    """Get videos (empty for now)."""
-    return []
+async def get_videos(limit: int = 50, status: str = None):
+    """Get videos from memory store."""
+    filtered_videos = videos_store
+    if status:
+        filtered_videos = [v for v in videos_store if v.get("status") == status]
+    return filtered_videos[:limit]
 
 # Simple in-memory storage for demo
 channels_store = []
@@ -86,10 +89,27 @@ async def add_channel(channel_data: dict):
 
 @app.post("/videos/process")
 async def process_video(video_data: dict):
-    """Process video (mock response)."""
+    """Process video (stores in memory for demo)."""
     url = video_data.get("url", "")
     if url:
-        return {"message": f"Video processing started for: {url}", "url": url}
+        # Extract video ID from URL for demo
+        video_id = url.split("v=")[-1].split("&")[0] if "v=" in url else f"vid_{len(videos_store)}"
+        title = f"Video from {url.split('/')[-1][:20]}..." if "/" in url else "Demo Video"
+        
+        video = {
+            "id": len(videos_store) + 1,
+            "video_id": video_id,
+            "title": title,
+            "channel_name": "Demo Channel",
+            "url": url,
+            "duration_seconds": 300,  # 5 minutes demo
+            "upload_date": "2024-01-01T00:00:00",
+            "status": "pending",
+            "discovered_at": "2024-01-01T00:00:00",
+            "transcribed_at": None
+        }
+        videos_store.append(video)
+        return {"message": f"Video processing started: {title}", "url": url}
     return {"message": "Invalid video URL", "url": url}
 
 @app.post("/monitoring/start")
@@ -135,6 +155,25 @@ async def get_storage_status():
 async def cleanup_storage(cleanup_data: dict = None):
     """Cleanup storage (mock response)."""
     return {"message": "Storage cleanup would run in full system"}
+
+@app.get("/videos/{video_id}/transcription")
+async def get_transcription(video_id: str):
+    """Get transcription for a video (mock data)."""
+    return {
+        "video_id": video_id,
+        "full_text": "This is a demo transcription for testing the web UI. In the real system, this would contain the actual transcribed text from the video.",
+        "segments": [
+            {"start": 0, "end": 5, "text": "Hello and welcome to this demo video.", "speaker": "Speaker 1"},
+            {"start": 5, "end": 10, "text": "This is just sample transcription data.", "speaker": "Speaker 1"},
+            {"start": 10, "end": 15, "text": "The real system would have actual transcribed content.", "speaker": "Speaker 1"}
+        ],
+        "speakers": {"has_speaker_info": True, "total_speakers": 1, "speakers": ["Speaker 1"]},
+        "language": "en",
+        "confidence_score": 0.95,
+        "word_count": 25,
+        "speaker_count": 1,
+        "created_at": "2024-01-01T00:00:00"
+    }
 
 if __name__ == "__main__":
     print("🚀 Starting Simple Video Transcription System API Server")
