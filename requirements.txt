@@ -36,3 +36,5 @@ accelerate>=0.24.0
 pytest>=7.4.0
 black>=23.0.0
 flake8>=6.0.0
+fastapi[all]
+uvicorn[standard]
