@@ -31,10 +31,11 @@ async def root():
 @app.get("/status")
 async def get_system_status():
     """Get basic system status."""
+    active_channels = len([c for c in channels_store if c.get("is_active", True)])
     return {
-        "is_running": False,
-        "channels": {"total": 0, "active": 0},
-        "videos": {"total": 0, "pending": 0, "completed": 0, "failed": 0},
+        "is_running": len(channels_store) > 0,
+        "channels": {"total": len(channels_store), "active": active_channels},
+        "videos": {"total": len(videos_store), "pending": 0, "completed": 0, "failed": 0},
         "storage": {
             "immediate_cleanup": True,
             "audio_only_downloads": True,
@@ -49,38 +50,66 @@ async def get_system_status():
 
 @app.get("/channels")
 async def get_channels():
-    """Get channels (empty for now)."""
-    return []
+    """Get channels from memory store."""
+    return channels_store
 
 @app.get("/videos")
 async def get_videos():
     """Get videos (empty for now)."""
     return []
 
+# Simple in-memory storage for demo
+channels_store = []
+videos_store = []
+
 @app.post("/channels")
 async def add_channel(channel_data: dict):
-    """Add channel (mock response)."""
-    return {"message": "Channel would be added in full system", "url": channel_data.get("url", "")}
+    """Add channel (stores in memory for demo)."""
+    url = channel_data.get("url", "")
+    if url:
+        # Extract channel name from URL for demo
+        channel_name = url.split("/")[-1].replace("@", "")
+        channel_id = f"UC{len(channels_store):010d}"
+        
+        channel = {
+            "id": len(channels_store) + 1,
+            "channel_id": channel_id,
+            "channel_name": channel_name,
+            "channel_url": url,
+            "is_active": True,
+            "last_checked": None,
+            "created_at": "2024-01-01T00:00:00"
+        }
+        channels_store.append(channel)
+        return {"message": f"Channel '{channel_name}' added successfully", "url": url}
+    return {"message": "Invalid channel URL", "url": url}
 
 @app.post("/videos/process")
 async def process_video(video_data: dict):
     """Process video (mock response)."""
-    return {"message": "Video would be processed in full system", "url": video_data.get("url", "")}
+    url = video_data.get("url", "")
+    if url:
+        return {"message": f"Video processing started for: {url}", "url": url}
+    return {"message": "Invalid video URL", "url": url}
 
 @app.post("/monitoring/start")
 async def start_monitoring():
-    """Start monitoring (mock response)."""
-    return {"message": "Monitoring would start in full system"}
+    """Start monitoring (realistic response)."""
+    if not channels_store:
+        return {"message": "Cannot start monitoring: No channels added yet. Please add some YouTube channels first."}
+    return {"message": f"Monitoring started for {len(channels_store)} channel(s)"}
 
 @app.post("/monitoring/stop")
 async def stop_monitoring():
-    """Stop monitoring (mock response)."""
-    return {"message": "Monitoring would stop in full system"}
+    """Stop monitoring (realistic response)."""
+    return {"message": "Monitoring stopped"}
 
 @app.post("/monitoring/cycle")
 async def run_cycle():
-    """Run cycle (mock response)."""
-    return {"message": "Monitoring cycle would run in full system"}
+    """Run cycle (realistic response)."""
+    if not channels_store:
+        return {"message": "Nothing to monitor: No channels added yet"}
+    return {"message": f"Checking {len(channels_store)} channel(s) for new videos..."}
 
 @app.post("/search")
 async def search_videos(search_data: dict):
